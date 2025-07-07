@@ -2,8 +2,6 @@
 
 Mfumo huu ni mfano wa web app ya Node.js/Express kwa ajili ya kutuma malipo ya Mobile Money kupitia ZenoPay API, kupokea webhook notification, na kuonyesha taarifa zote kwenye UI ya kisasa.
 
-## Jina la Project (Pendekezo)
-**zenopay-tz-webhook-demo**
 
 ## Features
 - Kutuma malipo ya Mobile Money Tanzania kupitia ZenoPay API
@@ -39,7 +37,7 @@ Mfumo huu ni mfano wa web app ya Node.js/Express kwa ajili ya kutuma malipo ya M
    - Tembelea: [http://localhost:3000](http://localhost:3000)
 
 ## Jinsi Inavyofanya Kazi
-- Jaza fomu ya malipo, order_id inageneratiwa kiotomatiki (inaanza na `swaxnet-`)
+- Jaza fomu ya malipo, order_id inageneratiwa kiotomatiki
 - Webhook URL inajazwa kiotomatiki (readonly)
 - Ukishatuma malipo, notification za webhook zitakazoletwa na ZenoPay zitaonekana kwenye sehemu ya "Webhook Notifications"
 - Unaweza kuangalia status ya order kwa kutumia order_id
@@ -61,8 +59,6 @@ MIT License
 
 # English Version
 
-## Project Name (Suggestion)
-**zenopay-tz-webhook-demo**
 
 ## Description
 This is a sample Node.js/Express web app for sending Mobile Money payments via the ZenoPay API, receiving webhook notifications, and displaying all information in a modern UI.
