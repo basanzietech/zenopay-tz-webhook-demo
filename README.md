@@ -45,7 +45,7 @@ Mfumo huu ni mfano wa web app ya Node.js/Express kwa ajili ya kutuma malipo ya M
 ## Kuchangia (Contributing)
 - Pull requests zinakaribishwa!
 - Kama una pendekezo, bug, au unataka kuchangia, wasiliana nami:
-  - **WhatsApp:** 0657779003
+  - **WhatsApp:** 255657779003
   - **Email:** basanzietech@gmail.com
 
 ## Leseni
@@ -97,7 +97,7 @@ This is a sample Node.js/Express web app for sending Mobile Money payments via t
    - Go to: [http://localhost:3000](http://localhost:3000)
 
 ## How It Works
-- Fill the payment form; order_id is auto-generated (starts with `swaxnet-`)
+- Fill the payment form; order_id is auto-generated 
 - Webhook URL is auto-filled (readonly)
 - After sending payment, webhook notifications from ZenoPay will appear in the "Webhook Notifications" section
 - You can check order status using the order_id
@@ -105,7 +105,7 @@ This is a sample Node.js/Express web app for sending Mobile Money payments via t
 ## Contributing
 - Pull requests are welcome!
 - For suggestions, bug reports, or to contribute, contact me:
-  - **WhatsApp:** 0657779003
+  - **WhatsApp:** 255657779003
   - **Email:** basanzietech@gmail.com
 
 ## License
