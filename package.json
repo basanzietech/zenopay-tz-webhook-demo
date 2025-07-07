@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [zenopay, api,nodejs, expressjs, swaxnet],
+  "keywords": [zenopay],
   "author": "Benjamini Omary",
   "license": "ISC",
   "description": "in GitHub repo https://github.com/basanzietech/zenopay-tz-webhook-demo",
