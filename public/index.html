@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZenoPay Mobile Money Tanzania Demo</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f6f8fa;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 2em auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      padding: 2em 2em 1em 2em;
+    }
+    h1, h2 {
+      color: #1a237e;
+      margin-bottom: 0.5em;
+    }
+    form {
+      margin-bottom: 2em;
+      background: #f4f6fb;
+      padding: 1em 1.5em;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    label {
+      display: block;
+      margin-top: 1em;
+      color: #333;
+      font-weight: 500;
+    }
+    input, button {
+      padding: 0.6em;
+      margin-top: 0.2em;
+      border-radius: 5px;
+      border: 1px solid #bdbdbd;
+      font-size: 1em;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    input:focus {
+      outline: 2px solid #3949ab;
+      border-color: #3949ab;
+    }
+    button {
+      background: #3949ab;
+      color: #fff;
+      border: none;
+      margin-top: 1em;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #1a237e;
+    }
+    .inline {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .result {
+      background: #e3eafc;
+      padding: 1em;
+      margin-top: 1em;
+      border-radius: 8px;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      color: #263238;
+      font-size: 0.98em;
+      word-break: break-all;
+    }
+    #webhookNotifications {
+      min-height: 2em;
+      max-height: 250px;
+      overflow-y: auto;
+      background: #f9fbe7;
+      border: 1px solid #c5e1a5;
+      color: #33691e;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 1em 0.5em; }
+      form { padding: 1em 0.5em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ZenoPay Mobile Money Tanzania Demo</h1>
+    <form id="payForm">
+      <h2>Initiate Payment</h2>
+      <div class="inline">
+        <label style="flex:1;">Order ID <input name="order_id" id="order_id" required readonly></label>
+        <button type="button" id="regenOrderId" style="width:auto;">Regenerate</button>
+      </div>
+      <label>Buyer Email <input name="buyer_email" type="email" required></label>
+      <label>Buyer Name <input name="buyer_name" required></label>
+      <label>Buyer Phone <input name="buyer_phone" required></label>
+      <label>Amount (TZS) <input name="amount" type="number" required></label>
+      <label>Webhook URL <input name="webhook_url" id="webhook_url" required readonly></label>
+      <button type="submit">Send Payment</button>
+    </form>
+    <div id="payResult" class="result" style="display:none;"></div>
+
+    <form id="statusForm">
+      <h2>Check Order Status</h2>
+      <label>Order ID <input name="order_id" required></label>
+      <button type="submit">Check Status</button>
+    </form>
+    <div id="statusResult" class="result" style="display:none;"></div>
+
+    <h2>Webhook Notifications</h2>
+    <div id="webhookNotifications" class="result"></div>
+  </div>
+  <script>
+    function uuidv4() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+    function generateOrderId() {
+      return 'swaxnet-' + uuidv4();
+    }
+    function getBaseUrl() {
+      return window.location.origin;
+    }
+    function setWebhookUrl() {
+      document.getElementById('webhook_url').value = getBaseUrl() + '/payment-webhook';
+    }
+    function setOrderId() {
+      document.getElementById('order_id').value = generateOrderId();
+    }
+    document.getElementById('regenOrderId').onclick = setOrderId;
+    async function fetchWebhookNotifications() {
+      try {
+        const res = await fetch('/webhook-notifications');
+        const json = await res.json();
+        document.getElementById('webhookNotifications').textContent =
+          json.length === 0 ? 'No notifications yet.' : JSON.stringify(json, null, 2);
+      } catch (err) {
+        document.getElementById('webhookNotifications').textContent = 'Error fetching notifications.';
+      }
+    }
+    setInterval(fetchWebhookNotifications, 5000);
+    window.onload = function() {
+      setOrderId();
+      setWebhookUrl();
+      fetchWebhookNotifications();
+    };
+    document.getElementById('payForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form));
+      document.getElementById('payResult').style.display = 'none';
+      try {
+        const res = await fetch('/pay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        document.getElementById('payResult').textContent = JSON.stringify(json, null, 2);
+        document.getElementById('payResult').style.display = 'block';
+      } catch (err) {
+        document.getElementById('payResult').textContent = 'Error: ' + err;
+        document.getElementById('payResult').style.display = 'block';
+      }
+    };
+    document.getElementById('statusForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const order_id = form.order_id.value;
+      document.getElementById('statusResult').style.display = 'none';
+      try {
+        const res = await fetch(`/order-status?order_id=${encodeURIComponent(order_id)}`);
+        const json = await res.json();
+        document.getElementById('statusResult').textContent = JSON.stringify(json, null, 2);
+        document.getElementById('statusResult').style.display = 'block';
+      } catch (err) {
+        document.getElementById('statusResult').textContent = 'Error: ' + err;
+        document.getElementById('statusResult').style.display = 'block';
+      }
+    };
+  </script>
+</body>
+</html> 
